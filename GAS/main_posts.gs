@@ -10,7 +10,7 @@ function doPost(e) {
   if (path === "daiko") {
     var result = daikoHandler(e);
   }
-  else if (path.startsWith("koukan")) {
+  else if (path === "koukan") {
     var result = koukanHandler(e);
   }
   const output = ContentService.createTextOutput(JSON.stringify({result: result}));
