@@ -7,7 +7,13 @@ function getDateFromParam(str) {
   
   // パラメータの文字列から月と日を取得
   var month = parseInt(str.substring(0, 2), 10);
+  if (isNaN(month)) {
+    return "err";
+  }
   var day = parseInt(str.substring(2), 10);
+  if (isNaN(day)) {
+    return "err";
+  }
 
   // もし現在の月より小さい月なら来年とみなす
   if (month < currentMonth) {
