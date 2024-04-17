@@ -1,8 +1,27 @@
 {
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^2.7.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
-    "eslint": "^9.0.0"
-  }
+    "@types/node-fetch": "^2.6.11",
+    "eslint": "^9.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "name": "42cleaningshiftexchangeservice",
+  "description": "The Campus Cleaning Shift Exchange service offers a seamless solution for managing and exchanging cleaning shifts within a campus community. This service consists of two main components: a Discord bot and an API, designed to streamline the process of scheduling and updating cleaning responsibilities.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node src/index.ts",
+    "start": "node build/index.js",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
