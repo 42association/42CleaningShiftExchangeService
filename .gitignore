@@ -3,6 +3,7 @@ node_modules/
 
 # Compiled JavaScript files
 /dist/
+build/
 
 # Environment variables file (if used)
 .env
