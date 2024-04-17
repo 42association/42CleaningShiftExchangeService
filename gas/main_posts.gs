@@ -13,7 +13,11 @@ function doPost(e) {
   else if (path === "koukan") {
     var result = koukanHandler(e);
   }
-  const output = ContentService.createTextOutput(JSON.stringify({result: result}));
+  if (result === "200") {
+    var output = ContentService.createTextOutput(JSON.stringify({code: result, message: "OK"}));
+  } else {
+    var output = ContentService.createTextOutput(JSON.stringify({code: result, message: "KO"}));
+  }
   output.setMimeType(ContentService.MimeType.JSON);
   return output;
 }
