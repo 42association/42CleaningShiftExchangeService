@@ -1,4 +1,30 @@
-.sass-cache/
-*.css.map
-*.sass.map
-*.scss.map
+# Node.js dependencies
+node_modules/
+
+# Compiled JavaScript files
+/dist/
+build/
+
+# Environment variables file (if used)
+.env
+
+# Docker files
+.dockerignore
+Dockerfile
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+
+# Test result files
+coverage/
+.nyc_output/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
