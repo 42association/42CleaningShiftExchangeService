@@ -36,8 +36,7 @@ module.exports = {
         const partnerOriginalShiftDate = interaction.options.get('partner_original_shift_date');
         const partnerLogin = interaction.options.get('partner_login');
 
-        const endpoint = `https://script.google.com/macros/s/AKfycbzjUXfRN4cbm8LBvVdpUl5UoptzgAoqCHc_43gWfDzXI3Qlj-W2DNdtjywqj-lOZDzy7g/exec/koukan?date1=${exchangeDate?.value}&name1=${originalCleanerLogin?.value}&date2=${partnerOriginalShiftDate?.value}&name2=${partnerLogin?.value}`;
-        console.log(endpoint)
+        const endpoint = `https://script.google.com/macros/s/AKfycbzKa4NnOjH8xfptU0qJ1ee-M5bDvp5y5FKfedRQ3jh8NjOcHj3QAMBHkwdEM2QKzTblzw/exec/koukan?date1=${exchangeDate?.value}&name1=${originalCleanerLogin?.value}&date2=${partnerOriginalShiftDate?.value}&name2=${partnerLogin?.value}`;
         const requestBody = {};
 
         await interaction.deferReply();
@@ -51,7 +50,8 @@ module.exports = {
                 }
             });
             if (!response.ok) {
-                console.log(response)
+                const responseData = await response.json();
+                console.log(responseData)
                 throw new Error('Failed to exchange shifts.');
             }
             
