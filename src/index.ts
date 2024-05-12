@@ -4,6 +4,8 @@ import { REST } from 'discord.js';
 import { Routes } from 'discord-api-types/v9';
 import fs from 'fs';
 import path from 'path';
+import cron from 'node-cron';
+import { ReportDailyShift } from './message/dailyReport';
 
 dotenv.config()
 
@@ -71,3 +73,8 @@ client.on('interactionCreate', async (interaction: Interaction) => {
     }
 });
 client.login(process.env.TOKEN);
+
+// 毎日18時に実行される関数
+cron.schedule('0 18 * * *', () => {
+	ReportDailyShift(client);
+});
