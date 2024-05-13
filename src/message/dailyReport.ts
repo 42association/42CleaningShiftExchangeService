@@ -1,21 +1,17 @@
 import { Client, Collection, GuildMember } from 'discord.js';
 import dotenv from 'dotenv'
-import { ShiftMember } from '../types/shiftMember';
-import { FetchShiftMemberOfDay } from '../repository/fetchShiftMemberOfDay';
+import { ShiftList } from '../types/shift';
+import { FetchShiftsOfDay } from '../repository/fetchShiftsOfDay';
+import { LoginToMention } from '../utils/login-to-mention';
 
 dotenv.config()
 const channelId = process.env.REPORT_CHANNEL_ID;
 const guildId = process.env.GUILD_ID;
 
-function loginToDiscordId(login: string, members: Collection<string, GuildMember>): string | void {
-	const member = members.find(member => member.user.username === login);
-	if (!member) {
-		return;
+function shiftsToString(shifts: ShiftList | void, client: Client): string | void {
+	if (!shifts) {
+		return 'error';
 	}
-	return member.id;
-}
-
-function shiftMemberToString(shiftMember: ShiftMember | void, client: Client): string | void {
 	if (guildId === undefined) {
 		console.error('GUILD_ID is not set');
 		return;
@@ -25,33 +21,32 @@ function shiftMemberToString(shiftMember: ShiftMember | void, client: Client): s
 		console.error('Guild not found');
 		return;
 	}
-	if (shiftMember === undefined) {
-		return "No one is on shift."
-	}
 	const members = guild.members.cache;
 	var arr: string[] = [];
-	shiftMember.forEach(member => {
-		const discordId = loginToDiscordId(member.login, members);
-		if (discordId === undefined) {
-			arr.push(member.login);
-		}
-		arr.push(`<@${discordId}>`);
+	shifts.forEach(shift => {
+		const mention = LoginToMention(shift.Shift.User.Login, members);
+		arr.push(mention);
 	});
+	if (arr.length === 0) {
+		return 'shift unregistered';
+	}
 	return arr.join(' ');
 }
 
 async function getReportMessage(client: Client): Promise<string> {
-	var curDate = new Date();
-	curDate.setDate(curDate.getDate() + 1);
-	const tommorowShift = await FetchShiftMemberOfDay(curDate);
-	curDate.setDate(curDate.getDate() + 6);
-	const oneWeekAfterShift = await FetchShiftMemberOfDay(curDate);
-	const tommorowShiftString = shiftMemberToString(tommorowShift, client);
-	const oneWeekAfterShiftString = shiftMemberToString(oneWeekAfterShift, client);
-	var message: string;
-	message = '掃除シフト通知\n';
-	message += '> 明日: ' + tommorowShiftString + '\n';
-	message += '> 一週間後	: ' + oneWeekAfterShiftString + '\n';
+	var tommorow = new Date();
+	tommorow.setDate(tommorow.getDate() + 1);
+	var oneWeekAfter = new Date();
+	oneWeekAfter.setDate(oneWeekAfter.getDate() + 7);
+	const tommorowShift = await FetchShiftsOfDay(tommorow);
+	const oneWeekAfterShift = await FetchShiftsOfDay(oneWeekAfter);
+	const tommorowShiftString = shiftsToString(tommorowShift, client);
+	const oneWeekAfterShiftString = shiftsToString(oneWeekAfterShift, client);
+	var message: string = `
+	掃除シフト通知です。
+	> 明日(${tommorow.getMonth() + 1}/${tommorow.getDate}): ${tommorowShiftString}
+	> 一週間後(${oneWeekAfter.getMonth() + 1}/${oneWeekAfter.getDate}) : ${oneWeekAfterShiftString}
+	`
 	return message;
 }
 
