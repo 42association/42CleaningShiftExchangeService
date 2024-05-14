@@ -1,7 +1,9 @@
 import { Collection, GuildMember } from 'discord.js';
 
 function getDiscordIdFromName(login: string, members: Collection<string, GuildMember>): string | void {
-	const member = members.find(member => member.user.username === login);
+	const member = members.find(member => { return
+		member.displayName === login || member.globalName === login;
+	});
 	if (!member) {
 		return;
 	}
