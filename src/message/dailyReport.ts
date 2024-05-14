@@ -25,7 +25,7 @@ function shiftsToString(shifts: ShiftList | void, client: Client): string | void
 	const members = guild.members.cache;
 	var arr: string[] = [];
 	shifts.forEach(shift => {
-		const mention = LoginToMention(shift.Shift.User.Login, members);
+		const mention = LoginToMention(shift.User.Login, members);
 		arr.push(mention);
 	});
 	if (arr.length === 0) {
