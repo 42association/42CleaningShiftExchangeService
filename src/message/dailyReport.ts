@@ -1,8 +1,9 @@
-import { Client, Collection, GuildMember } from 'discord.js';
+import { Client } from 'discord.js';
 import dotenv from 'dotenv'
 import { ShiftList } from '../types/shift';
 import { FetchShiftsOfDay } from '../repository/fetchShiftsOfDay';
 import { LoginToMention } from '../utils/login-to-mention';
+import { DateToStr } from '../utils/date-to-str';
 
 dotenv.config()
 const channelId = process.env.REPORT_CHANNEL_ID;
@@ -44,8 +45,8 @@ async function getReportMessage(client: Client): Promise<string> {
 	const oneWeekAfterShiftString = shiftsToString(oneWeekAfterShift, client);
 	var message: string = `
 	掃除シフト通知です。
-	> 明日(${tommorow.getMonth() + 1}/${tommorow.getDate}): ${tommorowShiftString}
-	> 一週間後(${oneWeekAfter.getMonth() + 1}/${oneWeekAfter.getDate}) : ${oneWeekAfterShiftString}
+	> 明日(${DateToStr(tommorow)}): ${tommorowShiftString}
+	> 一週間後(${DateToStr(oneWeekAfter)}) : ${oneWeekAfterShiftString}
 	`
 	return message;
 }
