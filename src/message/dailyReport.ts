@@ -7,25 +7,14 @@ import { DateToStr } from '../utils/date-to-str';
 
 dotenv.config()
 const channelId = process.env.REPORT_CHANNEL_ID;
-const guildId = process.env.GUILD_ID;
 
 function shiftsToString(shifts: ShiftList | void, client: Client): string | void {
 	if (!shifts) {
 		return 'error';
 	}
-	if (guildId === undefined) {
-		console.error('GUILD_ID is not set');
-		return;
-	}
-	const guild = client.guilds.cache.get(guildId)
-	if (!guild) {
-		console.error('Guild not found');
-		return;
-	}
-	const members = guild.members.cache;
 	var arr: string[] = [];
 	shifts.forEach(shift => {
-		const mention = LoginToMention(shift.User.Login, members);
+		const mention = LoginToMention(shift.User.Login, client);
 		arr.push(mention);
 	});
 	if (arr.length === 0) {
