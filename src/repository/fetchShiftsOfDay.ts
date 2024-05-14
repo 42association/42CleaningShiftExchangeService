@@ -2,9 +2,7 @@ import { ShiftList } from "../types/shift";
 import { ErrorMessage } from "../types/error-message";
 import { DateToStr } from "../utils/date-to-str";
 
-const endpoint = "/shifts"
-
-
+const endpoint = "/shift"
 
 export async function FetchShiftsOfDay(day: Date): Promise<ShiftList | void> {
 	const dateStr = DateToStr(day);

@@ -7,6 +7,4 @@ export type Shift = {
 	"User" : User,
 };
 
-export type ShiftList = {
-	"Shift" : Shift,
-}[];
+export type ShiftList = Shift[];
