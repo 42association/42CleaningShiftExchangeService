@@ -16,10 +16,10 @@ async function shiftsToString(shifts: ShiftList | void, client: Client) {
 	try {
 		const members = await FetchMembers(client);
 		var arr: string[] = [];
-		shifts.forEach(shift => {
-			const mention = LoginToMention(shift.User.Login, members);
-			arr.push(mention);
-		});
+		for (const shift of shifts) {
+			const mention = await LoginToMention(shift.User.Login, members);
+			arr.push(mention)
+		}
 		if (arr.length === 0) {
 			return 'shift unregistered';
 		}
