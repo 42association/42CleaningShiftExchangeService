@@ -1,8 +1,8 @@
 import { Collection, GuildMember } from 'discord.js';
 
-function getDiscordIdFromName(login: string, members: Collection<string, GuildMember>): string | void {
-	const member = members.find(member => { return
-		member.displayName === login || member.user.globalName === login;
+async function getDiscordIdByLogin(login: string, members: Collection<string, GuildMember>): Promise<string | void> {
+	const member = members.find(member => {
+		return member.displayName === login || member.user.globalName === login;
 	});
 	if (!member) {
 		return ;
@@ -11,7 +11,7 @@ function getDiscordIdFromName(login: string, members: Collection<string, GuildMe
 }
 
 export function LoginToMention(login: string, members: Collection<string, GuildMember>): string {
-	const discordId = getDiscordIdFromName(login, members);
+	const discordId = getDiscordIdByLogin(login, members);
 	if (discordId === undefined) {
 		return login;
 	}

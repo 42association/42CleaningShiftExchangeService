@@ -4,32 +4,32 @@ import { ShiftList } from '../types/shift';
 import { FetchShiftsOfDay } from '../repository/fetchShiftsOfDay';
 import { LoginToMention } from '../utils/login-to-mention';
 import { DateToStr } from '../utils/date-to-str';
+import { FetchMembers } from '../utils/fetch-discord-object';
 
 dotenv.config()
 const channelId = process.env.REPORT_CHANNEL_ID;
 
-function shiftsToString(shifts: ShiftList | void, client: Client): string | void {
+async function shiftsToString(shifts: ShiftList | void, client: Client) {
 	if (!shifts) {
 		return 'error: no shifts inputted';
 	}
-	const guildId = process.env.GUILD_ID;
-	if (!guildId) {
-		return 'error: GUILD_ID is not set';
+	try {
+		const members = await FetchMembers(client);
+		var arr: string[] = [];
+		shifts.forEach(shift => {
+			const mention = LoginToMention(shift.User.Login, members);
+			arr.push(mention);
+		});
+		if (arr.length === 0) {
+			return 'shift unregistered';
+		}
+		return arr.join(' ');
+	} catch (e) {
+		if (e instanceof Error)
+			return e.message || 'error: unknown error';
+		else
+			return 'error: unknown error';
 	}
-	const guild = client.guilds.cache.get(guildId);
-	if (!guild) {
-		return 'error: guild not found';
-	}
-	const members = guild.members.cache;
-	var arr: string[] = [];
-	shifts.forEach(shift => {
-		const mention = LoginToMention(shift.User.Login, members);
-		arr.push(mention);
-	});
-	if (arr.length === 0) {
-		return 'shift unregistered';
-	}
-	return arr.join(' ');
 }
 
 async function getReportMessage(client: Client): Promise<string> {
@@ -39,8 +39,8 @@ async function getReportMessage(client: Client): Promise<string> {
 	oneWeekAfter.setDate(oneWeekAfter.getDate() + 7);
 	const tommorowShift = await FetchShiftsOfDay(tommorow);
 	const oneWeekAfterShift = await FetchShiftsOfDay(oneWeekAfter);
-	const tommorowShiftString = shiftsToString(tommorowShift, client);
-	const oneWeekAfterShiftString = shiftsToString(oneWeekAfterShift, client);
+	const tommorowShiftString = await shiftsToString(tommorowShift, client);
+	const oneWeekAfterShiftString = await shiftsToString(oneWeekAfterShift, client);
 	var message: string = `
 	掃除シフト通知です。
 	> 明日(${DateToStr(tommorow)}): ${tommorowShiftString}
