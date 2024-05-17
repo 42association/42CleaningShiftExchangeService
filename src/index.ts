@@ -78,7 +78,3 @@ client.login(process.env.TOKEN);
 cron.schedule('0 18 * * *', () => {
 	ReportDailyShift(client);
 });
-
-setTimeout(() => {
-    ReportDailyShift(client);
-}, 5000);
