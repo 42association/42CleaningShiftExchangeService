@@ -4,6 +4,8 @@ import { REST } from 'discord.js';
 import { Routes } from 'discord-api-types/v9';
 import fs from 'fs';
 import path from 'path';
+import cron from 'node-cron';
+import { ReportDailyShift } from './message/dailyReport';
 
 dotenv.config()
 
@@ -49,7 +51,7 @@ const rest = new REST({ version: '9' }).setToken(String(process.env.TOKEN));
     }
 })();
 
-const client: Client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client: Client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 
 client.once(Events.ClientReady, c => {
     console.log(`Ready! Logged in as ${c.user.tag}`);
@@ -71,3 +73,8 @@ client.on('interactionCreate', async (interaction: Interaction) => {
     }
 });
 client.login(process.env.TOKEN);
+
+// 毎日18時に実行される関数
+cron.schedule('0 18 * * *', () => {
+	ReportDailyShift(client);
+});
