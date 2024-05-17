@@ -10,26 +10,25 @@ dotenv.config()
 const channelId = process.env.REPORT_CHANNEL_ID;
 
 async function shiftsToString(shifts: ShiftList | void, client: Client) {
-	if (!shifts) {
-		return 'error: no shifts inputted';
-	}
-	try {
-		const members = await FetchMembers(client);
-		var arr: string[] = [];
-		shifts.forEach(shift => {
-			const mention = LoginToMention(shift.User.Login, members);
-			arr.push(mention);
-		});
-		if (arr.length === 0) {
-			return 'shift unregistered';
-		}
-		return arr.join(' ');
-	} catch (e) {
-		if (e instanceof Error)
-			return e.message || 'error: unknown error';
-		else
-			return 'error: unknown error';
-	}
+    if (!shifts) {
+        return 'error';
+    }
+
+	const members = await FetchMembers(client);
+    const mentions = await Promise.all(
+        shifts.map(async (shift) => {
+            const mention = await LoginToMention(shift.User.Login, members);
+            return mention !== null ? mention : '';
+        })
+    );
+
+    const filteredMentions = mentions.filter(mention => mention !== '');
+
+    if (filteredMentions.length === 0) {
+        return 'shift unregistered';
+    }
+
+    return filteredMentions.join(' ');
 }
 
 async function getReportMessage(client: Client): Promise<string> {
