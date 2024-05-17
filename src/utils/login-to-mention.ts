@@ -10,8 +10,8 @@ async function getDiscordIdByLogin(login: string, members: Collection<string, Gu
 	return member.id;
 }
 
-export function LoginToMention(login: string, members: Collection<string, GuildMember>): string {
-	const discordId = getDiscordIdByLogin(login, members);
+export async function LoginToMention(login: string, members: Collection<string, GuildMember>) {
+	const discordId = await getDiscordIdByLogin(login, members);
 	if (discordId === undefined) {
 		return login;
 	}
