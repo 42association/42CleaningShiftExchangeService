@@ -51,7 +51,7 @@ const rest = new REST({ version: '9' }).setToken(String(process.env.TOKEN));
     }
 })();
 
-const client: Client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client: Client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 
 client.once(Events.ClientReady, c => {
     console.log(`Ready! Logged in as ${c.user.tag}`);
@@ -78,3 +78,7 @@ client.login(process.env.TOKEN);
 cron.schedule('0 18 * * *', () => {
 	ReportDailyShift(client);
 });
+
+setTimeout(() => {
+    ReportDailyShift(client);
+}, 5000);
