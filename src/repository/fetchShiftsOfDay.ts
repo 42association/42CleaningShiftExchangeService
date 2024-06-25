@@ -2,11 +2,9 @@ import { ShiftList } from "../types/shift";
 import { ErrorMessage } from "../types/error-message";
 import { DateToStr } from "../utils/date-to-str";
 
-const endpoint = "/shift"
-
 export async function FetchShiftsOfDay(day: Date): Promise<ShiftList | void> {
 	const dateStr = DateToStr(day);
-	const url = `${process.env.API_URL}${endpoint}?date=${dateStr}`;
+	const url = `${process.env.API_URL_FT_ACTIVITY}/shifts?date=${dateStr}`;
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {
