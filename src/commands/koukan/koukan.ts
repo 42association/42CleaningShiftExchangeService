@@ -9,7 +9,7 @@ module.exports = {
         .addStringOption((option) =>
             option
                 .setName('exchange_date')
-                .setDescription('交換希望日程')
+                .setDescription('交換希望日程(YYYY-MM-DD)')
                 .setRequired(true)
         )
         .addStringOption((option) =>
@@ -21,13 +21,13 @@ module.exports = {
         .addStringOption((option) =>
             option
                 .setName('partner_original_shift_date')
-                .setDescription('交換相手の元のの掃除シフト日程')
+                .setDescription('交換相手の元の掃除シフト日程(YYYY-MM-DD)')
                 .setRequired(true)
         )
         .addStringOption((option) =>
             option
                 .setName('partner_login')
-                .setDescription('交換相手ののlogin')
+                .setDescription('交換相手のlogin')
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
@@ -56,7 +56,13 @@ module.exports = {
             if (!response.ok) {
                 const responseData = await response.json();
                 console.log(responseData)
-                throw new Error('Failed to exchange shifts.');
+                if (response.status === 400) {
+                    throw new Error('Invalid input.');
+                } else if (response.status === 500) {
+                    throw new Error('Internal server error.');
+                } else {
+                    throw new Error('Unknown error.');
+                }
             }
             
             const responseData = await response.json();
@@ -66,9 +72,13 @@ module.exports = {
             .setTitle('掃除シフト交換成功')
             .setDescription(`元の掃除担当者: ${originalCleanerLogin?.value}\n交換希望日程: ${exchangeDate?.value}\n交換相手: ${partnerLogin?.value}\n交換相手の元の掃除シフト日程: ${partnerOriginalShiftDate?.value}`);
             await interaction.editReply({ embeds: [embed] });
-        } catch (error) {
-            console.error(error);
-            await interaction.editReply('掃除シフト交換に失敗しました。')
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(error);
+                await interaction.editReply(`掃除シフト交換に失敗しました。\n原因: ${error.message}`);
+            } else {
+                await interaction.editReply(`掃除シフト交換に失敗しました。\n原因: Unknown error.`);
+            }
         }
     }
 }
