@@ -6,7 +6,7 @@ const endpoint = "/shift"
 
 export async function FetchShiftsOfDay(day: Date): Promise<ShiftList | void> {
 	const dateStr = DateToStr(day);
-	const url = `${process.env.API_URL}${endpoint}?date=${dateStr}`;
+	const url = `${process.env.API_URL_FETCHSHIFTSOFDAY}${endpoint}?date=${dateStr}`;
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {

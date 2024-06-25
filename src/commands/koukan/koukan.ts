@@ -36,17 +36,21 @@ module.exports = {
         const partnerOriginalShiftDate = interaction.options.get('partner_original_shift_date');
         const partnerLogin = interaction.options.get('partner_login');
 
-        const endpoint = `https://script.google.com/macros/s/AKfycbzKa4NnOjH8xfptU0qJ1ee-M5bDvp5y5FKfedRQ3jh8NjOcHj3QAMBHkwdEM2QKzTblzw/exec/koukan?date1=${exchangeDate?.value}&name1=${originalCleanerLogin?.value}&date2=${partnerOriginalShiftDate?.value}&name2=${partnerLogin?.value}`;
-        const requestBody = {};
+        const apiurl = process.env.API_URL_FT_ACTIVITY + "/shifts/exchange";
+        const requestBody = {
+            "login1": originalCleanerLogin?.value,
+            "login2": partnerLogin?.value,
+            "date1": exchangeDate?.value,
+            "date2": partnerOriginalShiftDate?.value
+        };
 
         await interaction.deferReply();
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetch(apiurl, {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + process.env.API_TOKEN
+                    'Content-Type': 'application/json'
                 }
             });
             if (!response.ok) {
@@ -57,11 +61,10 @@ module.exports = {
             
             const responseData = await response.json();
             console.log(responseData)
-
             
             const embed = new EmbedBuilder()
             .setTitle('掃除シフト交換成功')
-            .setDescription(`元の掃除担当者: ${originalCleanerLogin?.value}\n交換希望日程: ${exchangeDate?.value}\n交換相手の元の掃除シフト日程: ${partnerOriginalShiftDate?.value}\n交換相手: ${partnerLogin?.value}`);
+            .setDescription(`元の掃除担当者: ${originalCleanerLogin?.value}\n交換希望日程: ${exchangeDate?.value}\n交換相手: ${partnerLogin?.value}\n交換相手の元の掃除シフト日程: ${partnerOriginalShiftDate?.value}`);
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             console.error(error);
