@@ -44,13 +44,16 @@ module.exports = {
             "date2": partnerOriginalShiftDate?.value
         };
 
+        const api_key = process.env.API_KEY_FT_ACTIVITY;
+
         await interaction.deferReply();
         try {
             const response = await fetch(apiurl, {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + api_key
                 }
             });
             if (!response.ok) {
@@ -60,6 +63,8 @@ module.exports = {
                     throw new Error('Invalid input.');
                 } else if (response.status === 500) {
                     throw new Error('Internal server error.');
+                } else if (response.status === 401) {
+                    throw new Error('Unauthorized.');
                 } else {
                     throw new Error('Unknown error.');
                 }
